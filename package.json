@@ -9,7 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "faiss-node": "^0.5.1",
+    "langchain": "^1.2.14",
     "next": "16.1.5",
+    "openai": "^6.16.0",
+    "pdf-parse": "^2.4.5",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
