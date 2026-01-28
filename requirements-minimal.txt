@@ -1,0 +1,7 @@
+# Requirements minimal - Version ultra-légère pour Render
+streamlit==1.28.1
+google-generativeai==0.3.2
+pypdf==3.0.1
+numpy==1.24.3
+scikit-learn==1.3.0
+python-dotenv==1.0.0
