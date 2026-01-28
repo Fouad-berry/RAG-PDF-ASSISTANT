@@ -1,5 +1,5 @@
 import streamlit as st
-import fitz  # PyMuPDF
+import pypdf  # Remplace PyMuPDF
 import os
 import tempfile
 import shutil
@@ -33,26 +33,42 @@ load_dotenv()
 @st.cache_resource
 def get_ai_models():
     """Initialise les modèles AI selon l'environnement"""
-    environment = os.getenv("ENVIRONMENT", "development")
     google_api_key = os.getenv("GOOGLE_API_KEY")
     
-    if environment == "production" and google_api_key and GEMINI_AVAILABLE:
-        # Production avec Gemini
-        embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/gemini-embedding-001", 
-            google_api_key=google_api_key
-        )
-        llm = ChatGoogleGenerativeAI(
-            model="models/gemini-2.5-flash", 
-            google_api_key=google_api_key, 
-            temperature=0.2
-        )
-        model_type = "Gemini (Production)"
+    # Utiliser Gemini si la clé API est disponible (dev ou prod)
+    if google_api_key and GEMINI_AVAILABLE:
+        try:
+            embeddings = GoogleGenerativeAIEmbeddings(
+                model="models/gemini-embedding-001", 
+                google_api_key=google_api_key
+            )
+            llm = ChatGoogleGenerativeAI(
+                model="models/gemini-2.5-flash", 
+                google_api_key=google_api_key, 
+                temperature=0.2
+            )
+            environment = os.getenv("ENVIRONMENT", "development")
+            model_type = f"Gemini ({environment.title()})"
+            return embeddings, llm, model_type
+        except Exception as e:
+            st.error(f"❌ Erreur configuration Gemini: {str(e)}")
+            st.stop()
     else:
-        st.error("❌ Configuration manquante pour les modèles AI")
+        # Messages d'erreur plus précis
+        if not GEMINI_AVAILABLE:
+            st.error("❌ langchain-google-genai non installé")
+        elif not google_api_key:
+            st.error("❌ GOOGLE_API_KEY manquante dans .env")
+        else:
+            st.error("❌ Configuration manquante pour les modèles AI")
+        
+        st.markdown("""
+        ### 🔧 Pour corriger :
+        1. **Vérifier .env** : `GOOGLE_API_KEY=ta_clé_ici`
+        2. **Redémarrer** l'application
+        3. **Clé Gemini** : [Google AI Studio](https://aistudio.google.com/app/apikey)
+        """)
         st.stop()
-    
-    return embeddings, llm, model_type
 
 # CSS personnalisé
 st.markdown("""
@@ -91,24 +107,27 @@ st.markdown("""
 
 # Fonctions utilitaires
 def extract_text_from_pdf(uploaded_file) -> str:
-    """Extrait le texte d'un PDF uploadé"""
+    """Extrait le texte d'un PDF uploadé avec pypdf"""
     try:
         # Créer un fichier temporaire
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
             tmp_file.write(uploaded_file.read())
             tmp_path = tmp_file.name
         
-        # Extraire le texte
-        doc = fitz.open(tmp_path)
+        # Extraire le texte avec pypdf
         text = ""
+        with open(tmp_path, 'rb') as file:
+            pdf_reader = pypdf.PdfReader(file)
+            
+            # Extraire le texte de chaque page
+            for page_num, page in enumerate(pdf_reader.pages):
+                page_text = page.extract_text()
+                if page_text.strip():  # Ignorer les pages vides
+                    text += f"\n--- Page {page_num + 1} ---\n"
+                    text += page_text + "\n"
         
-        for page_num in range(len(doc)):
-            page = doc[page_num]
-            text += page.get_text()
-            text += "\n"
-        
-        doc.close()
-        os.unlink(tmp_path)  # Nettoyer le fichier temporaire
+        # Nettoyer le fichier temporaire
+        os.unlink(tmp_path)
         
         if not text.strip():
             raise ValueError("Le PDF semble vide ou illisible")
