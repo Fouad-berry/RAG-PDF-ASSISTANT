@@ -43,7 +43,7 @@ def get_ai_models():
                 google_api_key=google_api_key
             )
             llm = ChatGoogleGenerativeAI(
-                model="gemini-1.5-flash",  # Modèle avec quotas plus généreux
+                model="gemini-2.5-flash",  # Modèle avec quotas plus généreux
                 google_api_key=google_api_key, 
                 temperature=0.2
             )
