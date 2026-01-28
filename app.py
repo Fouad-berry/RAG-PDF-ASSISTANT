@@ -43,7 +43,7 @@ def get_ai_models():
                 google_api_key=google_api_key
             )
             llm = ChatGoogleGenerativeAI(
-                model="models/gemini-2.5-flash", 
+                model="gemini-1.5-flash",  # Modèle avec quotas plus généreux
                 google_api_key=google_api_key, 
                 temperature=0.2
             )
@@ -200,6 +200,24 @@ Réponse:"""
         response = llm.invoke(prompt)
         return response.content if hasattr(response, 'content') else str(response)
     except Exception as e:
+        error_str = str(e).lower()
+        if "quota" in error_str or "429" in error_str or "resourceexhausted" in error_str:
+            return """
+🚨 **Quota API temporairement dépassé**
+
+⏰ **Réessayez dans quelques heures** ou demain
+
+💡 **Informations :**
+- Projet en mode démo avec quotas gratuits limités
+- Reset automatique toutes les 24h
+- Version payante disponible si succès du projet
+
+📊 **Alternatives en attendant :**
+- Testez avec des questions plus courtes
+- Revenez demain pour plus de tests
+
+Merci de votre compréhension ! 🙏
+            """.strip()
         return f"❌ Erreur lors de la génération de la réponse: {str(e)}"
 
 # Interface principale
@@ -209,6 +227,14 @@ def main():
     
     # En-tête
     st.markdown('<h1 class="main-header">🤖 RAG PDF Assistant</h1>', unsafe_allow_html=True)
+    
+    # Avertissement quota
+    st.markdown("""
+    <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; 
+                padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;">
+        ⚠️ <strong>Version DEMO</strong> - Quotas API limités | Si succès, upgrade prévu ! 🚀
+    </div>
+    """, unsafe_allow_html=True)
     
     # Sidebar - Informations et statut
     with st.sidebar:
