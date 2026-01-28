@@ -324,24 +324,5 @@ def main():
             </div>
             """, unsafe_allow_html=True)
     
-    # Section historique des questions (optionnelle)
-    if 'vectorstore' in st.session_state:
-        st.markdown("---")
-        st.markdown("### 💡 Questions suggérées")
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            if st.button("📋 Résumé général"):
-                st.session_state.suggested_question = "Peux-tu faire un résumé général de ce document ?"
-        
-        with col2:
-            if st.button("🎯 Points clés"):
-                st.session_state.suggested_question = "Quels sont les points les plus importants ?"
-        
-        with col3:
-            if st.button("🔍 Informations spécifiques"):
-                st.session_state.suggested_question = "Quelles informations spécifiques sont mentionnées ?"
-
 if __name__ == "__main__":
     main()
