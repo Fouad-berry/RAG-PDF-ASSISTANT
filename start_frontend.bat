@@ -1,0 +1,6 @@
+@echo off
+echo 🎨 Démarrage de l'interface Streamlit...
+cd /d "%~dp0frontend"
+echo 🌐 Ouverture de l'interface web...
+streamlit run streamlit_app.py --server.port 8501
+pause
