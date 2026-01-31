@@ -1,42 +1,60 @@
+## ☁️ Déploiement Render (Cloud)
+
+Le projet est prêt pour un déploiement **ultra-simple** sur [Render](https://render.com) :
+
+1. **Poussez le repo sur GitHub**
+2. **Créez un service web Python sur Render**
+3. **Render détecte automatiquement** :
+   - `requirements.txt`
+   - `Procfile`
+   - `app.py`
+4. **Ajoutez la variable d'environnement** `GOOGLE_API_KEY` dans les settings Render
+
+> Voir le guide complet : [RENDER.md](RENDER.md)
+
+Après déploiement, accédez à votre assistant sur l'URL Render fournie !
+
+
 # RAG PDF Assistant
 
-> Assistant IA pour interroger vos documents PDF avec RAG (Retrieval-Augmented Generation) utilisant FastAPI, LangChain et Streamlit.
+> Assistant IA pour interroger vos documents PDF avec RAG (Retrieval-Augmented Generation) utilisant Streamlit, Gemini (Google), FAISS et pypdf.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
+![Gemini](https://img.shields.io/badge/Gemini-Google%20AI-4285F4?style=flat-square&logo=google)
+![FAISS](https://img.shields.io/badge/FAISS-1.9.0-FF6B6B?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ---
 
 ## 🚀 À propos
 
-Ce projet RAG (Retrieval-Augmented Generation) permet d'interroger des documents PDF en langage naturel grâce à l'intelligence artificielle. Migré de Node.js vers Python pour bénéficier d'un écosystème AI/ML plus mature et d'une meilleure compatibilité avec les librairies de traitement PDF.
+Ce projet RAG (Retrieval-Augmented Generation) permet d'interroger des documents PDF en langage naturel grâce à l'intelligence artificielle. Il utilise une architecture **tout-en-un** basée sur Streamlit, Gemini (Google), FAISS et pypdf, optimisée pour un déploiement simple (notamment sur Render).
 
 ## ✨ Fonctionnalités
 
-- **📤 Upload PDF intelligent** : Support robuste des PDFs via PyMuPDF (fitz)
-- **⚡ API FastAPI** : Backend performant avec documentation automatique Swagger
-- **🎨 Interface Streamlit** : Interface web intuitive avec upload drag & drop
-- **🧠 RAG avancé** : LangChain avec récupération de contexte intelligent
-- **🔍 Vectorisation FAISS** : Stockage et recherche vectorielle optimisée
-- **📊 Métriques en temps réel** : Suivi des chunks, caractères et sources
-- **🛡️ Gestion d'erreurs** : Système complet de validation et logging
-- **🗂️ Historique des fichiers** : Gestion et visualisation des PDFs uploadés
+- **📤 Upload PDF intelligent** : Extraction robuste via pypdf
+- **🎨 Interface Streamlit** : Web app moderne, drag & drop
+- **🧠 RAG Gemini** : IA Google Gemini (API clé requise)
+- **🔍 Vectorisation FAISS** : Recherche sémantique rapide
+- **📊 Métriques en temps réel** : Chunks, caractères, sources
+- **🛡️ Gestion d'erreurs** : Validation et feedback utilisateur
+- **💾 Zéro backend séparé** : Tout dans `app.py` (pas de FastAPI)
 
 ## 🛠️ Stack Technique
 
-### Backend & API
-![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-009688?style=flat-square&logo=fastapi)
+### Application principale
+![Streamlit](https://img.shields.io/badge/Streamlit-1.28.1-FF4B4B?style=flat-square&logo=streamlit)
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python)
 
-### AI & Machine Learning  
-![LangChain](https://img.shields.io/badge/LangChain-0.0.334-FF6F00?style=flat-square)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=flat-square&logo=openai)
-![FAISS](https://img.shields.io/badge/FAISS-1.7.4-FF6B6B?style=flat-square)
+### AI & Machine Learning
+![Gemini](https://img.shields.io/badge/Gemini-Google%20AI-4285F4?style=flat-square&logo=google)
+![FAISS](https://img.shields.io/badge/FAISS-1.9.0-FF6B6B?style=flat-square)
+![LangChain](https://img.shields.io/badge/LangChain-0.1.0-FF6F00?style=flat-square)
 
-### Frontend & Interface
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28.1-FF4B4B?style=flat-square&logo=streamlit)
+### PDF & Traitement
+![pypdf](https://img.shields.io/badge/pypdf-3.1.0-4CAF50?style=flat-square)
+![Local Storage](https://img.shields.io/badge/Storage-Temporaire-9C27B0?style=flat-square)
 
 ### Processing & Storage
 ![PyMuPDF](https://img.shields.io/badge/PyMuPDF-1.23.0-4CAF50?style=flat-square)
@@ -62,22 +80,22 @@ graph TB
     style F fill:#412991,stroke:#333,stroke-width:2px,color:#fff
 ```
 
+
 ### 📁 Structure du Projet
 
 ```
 rag-psdf-assistant/
-├── 🚀 backend/              # Serveur FastAPI
-│   ├── main.py             # Points d'entrée API
-│   └── rag_engine.py       # Logique RAG core
-├── 🎨 frontend/             # Interface Streamlit 
-│   └── streamlit_app.py    # Application principale
-├── 📂 uploads/              # Stockage PDFs (auto-créé)
-├── 🧮 vectorstore/          # Base vectorielle FAISS (auto-créé)
-├── 📋 requirements.txt      # Dépendances Python
-├── 🔧 start_backend.bat     # Script démarrage backend
-├── 🎯 start_frontend.bat    # Script démarrage frontend
-└── 📝 .env.example         # Template configuration
+├── app.py               # Application Streamlit tout-en-un
+├── requirements.txt     # Dépendances Python
+├── requirements-minimal.txt # Dépendances ultra-légères (Render)
+├── Procfile             # Commande de démarrage (Render)
+├── .env.example         # Variables d'environnement exemple
+├── README.md            # Documentation principale
+├── RENDER.md            # Guide déploiement Render
 ```
+
+> **Note :** Pas de backend séparé, tout est dans `app.py`. Les fichiers PDF uploadés et les embeddings sont temporaires (pas de persistance longue durée).
+
 
 ## 📦 Installation & Démarrage
 
@@ -87,9 +105,8 @@ rag-psdf-assistant/
    ```bash
    # Vérifiez votre version Python (3.8+ requis)
    python --version
-   
-   # Préparez votre clé OpenAI
-   # Obtenez-la sur : https://platform.openai.com/api-keys
+   # Obtenez une clé API Gemini (Google AI)
+   # https://aistudio.google.com/app/apikey
    ```
 
 2. **📥 Installation des dépendances**
@@ -99,42 +116,19 @@ rag-psdf-assistant/
 
 3. **🔑 Configuration**
    ```bash
-   # Windows
-   copy .env.example .env
-   
-   # Linux/Mac  
-   cp .env.example .env
-   
-   # Éditer .env avec votre éditeur préféré
-   # OPENAI_API_KEY=sk-your-openai-api-key-here
+   # Copier le fichier d'exemple puis éditer
+   cp .env.example .env  # Linux/Mac
+   copy .env.example .env  # Windows
+   # Ouvrir .env et renseigner GOOGLE_API_KEY
    ```
 
-4. **🚀 Lancement des serveurs**
-
-   **🎯 Option A : Scripts automatiques (Windows)**
+4. **🚀 Lancement de l'application**
    ```bash
-   # Démarrer le backend FastAPI
-   start_backend.bat
-   
-   # Dans un nouveau terminal : démarrer le frontend Streamlit
-   start_frontend.bat
-   ```
-   
-   **⚙️ Option B : Démarrage manuel**
-   ```bash
-   # Terminal 1 - Backend
-   cd backend
-   python main.py
-   
-   # Terminal 2 - Frontend  
-   cd frontend
-   streamlit run streamlit_app.py
+   streamlit run app.py
    ```
 
-5. **🌐 Accès aux interfaces**
-   - **Frontend Streamlit** : http://localhost:8501
-   - **API Documentation** : http://localhost:8000/docs
-   - **Health Check** : http://localhost:8000/health
+5. **🌐 Accès à l'interface**
+   - **Application** : http://localhost:8501
 
 ---
 
@@ -160,17 +154,18 @@ rag-psdf-assistant/
    - Nombre de caractères indexés  
    - Liste des fichiers disponibles
 
-### 🛠️ API Endpoints
 
-| Endpoint | Méthode | Description |
-|----------|---------|-------------|
-| `/health` | GET | Status de l'API |
-| `/upload` | POST | Upload et indexation PDF |
-| `/ask` | POST | Question-réponse RAG |
-| `/files` | GET | Liste des fichiers indexés |
+### 🛠️ Utilisation
 
-📋 **Documentation complète** : http://localhost:8000/docs
----
+Tout se fait via l'interface web Streamlit :
+
+1. **Upload PDF** : Glissez-déposez ou sélectionnez un fichier PDF.
+2. **Indexation** : Le document est découpé, vectorisé et prêt à l'interrogation.
+3. **Posez vos questions** : Entrez une question, l'IA Gemini répond en citant le contexte extrait du PDF.
+4. **Métriques** : Visualisez le nombre de chunks, caractères, et le nom du fichier traité.
+
+> **Pas d'API REST** : Toutes les interactions se font via l'interface utilisateur Streamlit (http://localhost:8501).
+
 
 ## 🚨 Dépannage
 
